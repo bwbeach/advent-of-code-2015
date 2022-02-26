@@ -5,11 +5,29 @@ import (
 )
 
 func Test_computeFloor(t *testing.T) {
-	floor, err := computeFloor("((()())")
-	if err != nil {
-		t.Error("did not expect error", err)
+	data := []struct {
+		text            string
+		expected        int
+		expectedMessage string
+	}{
+		{"(())", 0, ""},
+		{"()()", 0, ""},
+		{"(()(()(", 3, ""},
+		{"))(((((", 3, ""},
+		{")())())", -3, ""},
+		{"(X)", 0, "bad character"},
 	}
-	if floor != 1 {
-		t.Error("expected floor 1", floor)
+	for _, d := range data {
+		floor, err := computeFloor(d.text)
+		if floor != d.expected {
+			t.Errorf("for '%s' expected %d but got %d", d.text, d.expected, floor)
+		}
+		actualMsg := ""
+		if err != nil {
+			actualMsg = err.Error()
+		}
+		if actualMsg != d.expectedMessage {
+			t.Errorf("for '%s' expected error '%s' but got '%s'", d.text, d.expectedMessage, actualMsg)
+		}
 	}
 }
