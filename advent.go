@@ -3,6 +3,8 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"os"
 )
 
 // computeFloor calculates the final floor of the elevator.
@@ -24,5 +26,15 @@ func computeFloor(text string) (int, error) {
 }
 
 func main() {
-	fmt.Println("hello")
+	text, err := ioutil.ReadFile("day01_input.txt")
+	if err != nil {
+		fmt.Printf("Error reading input: %s\n", err.Error())
+		os.Exit(1)
+	}
+	floor, err := computeFloor(string(text))
+	if err != nil {
+		fmt.Printf("Error computing floor: %s\n", err.Error())
+		os.Exit(1)
+	}
+	fmt.Printf("floor = %d\n", floor)
 }
