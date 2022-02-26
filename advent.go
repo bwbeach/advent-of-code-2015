@@ -7,33 +7,42 @@ import (
 	"os"
 )
 
+// nextFloor returns the floor after processing one instruction
+func nextFloor(prevFloor int, instruction rune) (int, error) {
+	if instruction == '(' {
+		return prevFloor + 1, nil
+	} else if instruction == ')' {
+		return prevFloor - 1, nil
+	} else {
+		return 0, errors.New("bad character")
+	}
+}
+
 // computeFloor calculates the final floor of the elevator.
 //
 // An opening parenthesis, (, means he should go up one floor,
 // and a closing parenthesis, ), means he should go down one floor.
 func computeFloor(text string) (int, error) {
 	floor := 0
+	var err error
 	for _, c := range text {
-		if c == '(' {
-			floor += 1
-		} else if c == ')' {
-			floor -= 1
-		} else {
-			return 0, errors.New("bad character")
+		floor, err = nextFloor(floor, c)
+		if err != nil {
+			return 0, err
 		}
 	}
 	return floor, nil
 }
 
+// basementPosition returns the index (one-based) of the first instruction
+// that puts the elevator in the basement.
 func basementPosition(text string) (int, error) {
 	floor := 0
+	var err error
 	for i, c := range text {
-		if c == '(' {
-			floor += 1
-		} else if c == ')' {
-			floor -= 1
-		} else {
-			return 0, errors.New("bad character")
+		floor, err = nextFloor(floor, c)
+		if err != nil {
+			return 0, err
 		}
 		if floor == -1 {
 			return i + 1, nil
