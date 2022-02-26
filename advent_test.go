@@ -31,3 +31,13 @@ func Test_computeFloor(t *testing.T) {
 		}
 	}
 }
+
+func Test_basementPosition(t *testing.T) {
+	pos, err := basementPosition("()())")
+	if pos != 5 {
+		t.Error("expected pos 5")
+	}
+	if err != nil {
+		t.Error("expected no error")
+	}
+}
