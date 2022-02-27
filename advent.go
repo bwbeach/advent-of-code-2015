@@ -83,6 +83,12 @@ func wrappingPaperNeeded(dims []int) int {
 	return 3*dims[0]*dims[1] + 2*dims[0]*dims[2] + 2*dims[1]*dims[2]
 }
 
+// ribbonNeeded returns the number of feet of ribbon needed for
+// a package, given the dimensions
+func ribbonNeeded(dims []int) int {
+	return 2*dims[0] + 2*dims[1] + dims[0]*dims[1]*dims[2]
+}
+
 func day02() {
 	file, err := os.Open("day02-input.txt")
 	if err != nil {
@@ -91,7 +97,8 @@ func day02() {
 	}
 	defer file.Close()
 
-	totalArea := 0
+	totalPaper := 0
+	totalRibbon := 0
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		dims, err := parsePackage(scanner.Text())
@@ -100,7 +107,8 @@ func day02() {
 			os.Exit(1)
 		}
 
-		totalArea += wrappingPaperNeeded(dims)
+		totalPaper += wrappingPaperNeeded(dims)
+		totalRibbon += ribbonNeeded(dims)
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -109,7 +117,8 @@ func day02() {
 	}
 
 	fmt.Println("Day 2")
-	fmt.Println("Total area needed: ", totalArea)
+	fmt.Println("Total paper needed: ", totalPaper)
+	fmt.Println("Total ribbon needed: ", totalRibbon)
 }
 
 func main() {

@@ -84,3 +84,19 @@ func Test_wrappingPaperNeeded(t *testing.T) {
 		}
 	}
 }
+
+func Test_ribbonNeeded(t *testing.T) {
+	data := []struct {
+		dims     []int
+		expected int
+	}{
+		{[]int{2, 3, 4}, 34},
+		{[]int{1, 1, 10}, 14},
+	}
+	for _, d := range data {
+		feet := ribbonNeeded(d.dims)
+		if feet != d.expected {
+			t.Errorf("expected %d but got %d", d.expected, feet)
+		}
+	}
+}
