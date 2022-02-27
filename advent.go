@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -77,6 +78,34 @@ func wrappingPaperNeeded(spec string) (int, error) {
 	return 3*dims[0]*dims[1] + 2*dims[0]*dims[2] + 2*dims[1]*dims[2], nil
 }
 
+func day02() {
+	file, err := os.Open("day02-input.txt")
+	if err != nil {
+		fmt.Printf("Error reading input: %s\n", err.Error())
+		os.Exit(1)
+	}
+	defer file.Close()
+
+	totalArea := 0
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		area, err := wrappingPaperNeeded(scanner.Text())
+		if err != nil {
+			fmt.Printf("Error reading input: %s\n", err.Error())
+			os.Exit(1)
+		}
+		totalArea += area
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Printf("Error reading input: %s\n", err.Error())
+		os.Exit(1)
+	}
+
+	fmt.Println("Day 2")
+	fmt.Println("Total area needed: ", totalArea)
+}
+
 func main() {
 
 	fmt.Println("Day 1")
@@ -100,4 +129,5 @@ func main() {
 	}
 	fmt.Printf("basementPos = %d\n", basementPos)
 
+	day02()
 }
