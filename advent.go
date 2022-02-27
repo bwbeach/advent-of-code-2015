@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"sort"
+	"strconv"
+	"strings"
 )
 
 // nextFloor returns the floor after processing one instruction
@@ -51,8 +54,33 @@ func basementPosition(text string) (int, error) {
 	return 0, errors.New("never entered basement")
 }
 
+// wrappingPaperNeeded returns the number of square feet needed
+// for a package, given the package size as a string like
+// "4x2x12".
+func wrappingPaperNeeded(spec string) (int, error) {
+	words := strings.Split(spec, "x")
+	if len(words) != 3 {
+		return 0, errors.New("bad package spec")
+	}
+
+	dims := make([]int, 3)
+	for i := 0; i < 3; i++ {
+		dim, err := strconv.Atoi(words[i])
+		if err != nil {
+			return 0, err
+		}
+		dims[i] = dim
+	}
+
+	sort.Ints(dims)
+
+	return 3*dims[0]*dims[1] + 2*dims[0]*dims[2] + 2*dims[1]*dims[2], nil
+}
+
 func main() {
-	text, err := ioutil.ReadFile("day01_input.txt")
+
+	fmt.Println("Day 1")
+	text, err := ioutil.ReadFile("day01-input.txt")
 	if err != nil {
 		fmt.Printf("Error reading input: %s\n", err.Error())
 		os.Exit(1)
