@@ -71,11 +71,10 @@ func Test_parsePackage(t *testing.T) {
 
 func Test_wrappingPaperNeeded(t *testing.T) {
 	data := []struct {
-		dims            []int
-		expected        int
-		expectedMessage string
+		dims     []int
+		expected int
 	}{
-		{[]int{2, 3, 4}, 58, ""},
+		{[]int{2, 3, 4}, 58},
 	}
 	for _, d := range data {
 		area := wrappingPaperNeeded(d.dims)
