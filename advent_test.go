@@ -1,6 +1,7 @@
 package main
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -42,21 +43,21 @@ func Test_basementPosition(t *testing.T) {
 	}
 }
 
-func Test_wrappingPaperNeeded(t *testing.T) {
+func Test_parsePackage(t *testing.T) {
 	data := []struct {
 		text            string
-		expected        int
+		expected        []int
 		expectedMessage string
 	}{
-		{"2x3x4", 58, ""},
-		{"3x4x2", 58, ""},
-		{"3x1", 0, "bad package spec"},
-		{"3xAx4", 0, "strconv.Atoi: parsing \"A\": invalid syntax"},
+		{"2x3x4", []int{2, 3, 4}, ""},
+		{"3x4x2", []int{2, 3, 4}, ""},
+		{"3x1", nil, "bad package spec"},
+		{"3xAx4", nil, "strconv.Atoi: parsing \"A\": invalid syntax"},
 	}
 	for _, d := range data {
-		floor, err := wrappingPaperNeeded(d.text)
-		if floor != d.expected {
-			t.Errorf("for '%s' expected %d but got %d", d.text, d.expected, floor)
+		dims, err := parsePackage(d.text)
+		if !reflect.DeepEqual(dims, d.expected) {
+			t.Errorf("for '%s' expected %d but got %d", d.text, d.expected, dims)
 		}
 		actualMsg := ""
 		if err != nil {
@@ -64,6 +65,22 @@ func Test_wrappingPaperNeeded(t *testing.T) {
 		}
 		if actualMsg != d.expectedMessage {
 			t.Errorf("for '%s' expected error '%s' but got '%s'", d.text, d.expectedMessage, actualMsg)
+		}
+	}
+}
+
+func Test_wrappingPaperNeeded(t *testing.T) {
+	data := []struct {
+		dims            []int
+		expected        int
+		expectedMessage string
+	}{
+		{[]int{2, 3, 4}, 58, ""},
+	}
+	for _, d := range data {
+		area := wrappingPaperNeeded(d.dims)
+		if area != d.expected {
+			t.Errorf("expected %d but got %d", d.expected, area)
 		}
 	}
 }

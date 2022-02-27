@@ -55,27 +55,32 @@ func basementPosition(text string) (int, error) {
 	return 0, errors.New("never entered basement")
 }
 
-// wrappingPaperNeeded returns the number of square feet needed
-// for a package, given the package size as a string like
-// "4x2x12".
-func wrappingPaperNeeded(spec string) (int, error) {
+// parsePackage returns the dimensions, smallest first, of
+// a package, given a package spec string like "4x2x12"
+func parsePackage(spec string) ([]int, error) {
 	words := strings.Split(spec, "x")
 	if len(words) != 3 {
-		return 0, errors.New("bad package spec")
+		return nil, errors.New("bad package spec")
 	}
 
 	dims := make([]int, 3)
 	for i := 0; i < 3; i++ {
 		dim, err := strconv.Atoi(words[i])
 		if err != nil {
-			return 0, err
+			return nil, err
 		}
 		dims[i] = dim
 	}
 
 	sort.Ints(dims)
 
-	return 3*dims[0]*dims[1] + 2*dims[0]*dims[2] + 2*dims[1]*dims[2], nil
+	return dims, nil
+}
+
+// wrappingPaperNeeded returns the number of square feet needed
+// for a package, given the dimensions.
+func wrappingPaperNeeded(dims []int) int {
+	return 3*dims[0]*dims[1] + 2*dims[0]*dims[2] + 2*dims[1]*dims[2]
 }
 
 func day02() {
@@ -89,12 +94,13 @@ func day02() {
 	totalArea := 0
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		area, err := wrappingPaperNeeded(scanner.Text())
+		dims, err := parsePackage(scanner.Text())
 		if err != nil {
 			fmt.Printf("Error reading input: %s\n", err.Error())
 			os.Exit(1)
 		}
-		totalArea += area
+
+		totalArea += wrappingPaperNeeded(dims)
 	}
 
 	if err := scanner.Err(); err != nil {
