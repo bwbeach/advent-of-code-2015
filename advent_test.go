@@ -99,3 +99,30 @@ func Test_ribbonNeeded(t *testing.T) {
 		}
 	}
 }
+
+func Test_nextHouse(t *testing.T) {
+	data := []struct {
+		start           point
+		move            rune
+		expected        point
+		expectedMessage string
+	}{
+		{point{10, 20}, '<', point{9, 20}, ""},
+		{point{10, 20}, '>', point{11, 20}, ""},
+		{point{10, 20}, '^', point{10, 21}, ""},
+		{point{10, 20}, 'v', point{10, 19}, ""},
+	}
+	for _, d := range data {
+		end, err := nextHouse(d.start, d.move)
+		if !reflect.DeepEqual(end, d.expected) {
+			t.Errorf("for '%v' expected %d but got %v", d.start, d.expected, end)
+		}
+		actualMsg := ""
+		if err != nil {
+			actualMsg = err.Error()
+		}
+		if actualMsg != d.expectedMessage {
+			t.Errorf("for '%v' expected error '%s' but got '%s'", d.start, d.expectedMessage, actualMsg)
+		}
+	}
+}

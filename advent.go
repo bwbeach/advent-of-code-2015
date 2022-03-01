@@ -121,6 +121,26 @@ func day02() {
 	fmt.Println("Total ribbon needed: ", totalRibbon)
 }
 
+type point struct {
+	x int
+	y int
+}
+
+func nextHouse(start point, move rune) (point, error) {
+	switch move {
+	case '<':
+		return point{x: start.x - 1, y: start.y}, nil
+	case '>':
+		return point{x: start.x + 1, y: start.y}, nil
+	case '^':
+		return point{x: start.x, y: start.y + 1}, nil
+	case 'v':
+		return point{x: start.x, y: start.y - 1}, nil
+	default:
+		return point{}, errors.New("bad move")
+	}
+}
+
 func main() {
 
 	fmt.Println("Day 1")
