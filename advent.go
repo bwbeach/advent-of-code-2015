@@ -141,6 +141,30 @@ func nextHouse(start point, move rune) (point, error) {
 	}
 }
 
+func day03() {
+	fmt.Println("Day 3")
+	text, err := ioutil.ReadFile("day03-input.txt")
+	if err != nil {
+		fmt.Printf("Error reading input: %s\n", err.Error())
+		os.Exit(1)
+	}
+
+	houses := make(map[point]bool, 0)
+	loc := point{x: 0, y: 0}
+	houses[loc] = true
+	for _, c := range string(text) {
+		loc, err = nextHouse(loc, c)
+		if err != nil {
+			fmt.Printf("Bad input char %v", loc)
+			os.Exit(1)
+		}
+		houses[loc] = true
+	}
+
+	houseCount := len(houses)
+	fmt.Println("Number of houses: ", houseCount)
+}
+
 func main() {
 
 	fmt.Println("Day 1")
@@ -165,4 +189,5 @@ func main() {
 	fmt.Printf("basementPos = %d\n", basementPos)
 
 	day02()
+	day03()
 }
