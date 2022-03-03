@@ -141,6 +141,23 @@ func nextHouse(start point, move rune) (point, error) {
 	}
 }
 
+// housesForMoves returns the set of houses visit for
+// one string of moves, started at (0, 0)
+func housesForMoves(moves string) (map[point]bool, error) {
+	houses := make(map[point]bool, 0)
+	loc := point{x: 0, y: 0}
+	var err error
+	houses[loc] = true
+	for _, c := range string(moves) {
+		loc, err = nextHouse(loc, c)
+		if err != nil {
+			return nil, fmt.Errorf("Bad input char %v", loc)
+		}
+		houses[loc] = true
+	}
+	return houses, nil
+}
+
 func day03() {
 	fmt.Println("Day 3")
 	text, err := ioutil.ReadFile("day03-input.txt")
@@ -149,16 +166,10 @@ func day03() {
 		os.Exit(1)
 	}
 
-	houses := make(map[point]bool, 0)
-	loc := point{x: 0, y: 0}
-	houses[loc] = true
-	for _, c := range string(text) {
-		loc, err = nextHouse(loc, c)
-		if err != nil {
-			fmt.Printf("Bad input char %v", loc)
-			os.Exit(1)
-		}
-		houses[loc] = true
+	houses, err := housesForMoves(string(text))
+	if err != nil {
+		fmt.Println("Error moving: ", err)
+		os.Exit(1)
 	}
 
 	houseCount := len(houses)
