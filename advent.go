@@ -158,15 +158,37 @@ func housesForMoves(moves string) (map[point]bool, error) {
 	return houses, nil
 }
 
+func everyOtherRune(s string, parity int) string {
+	runes := make([]rune, 0)
+	for i, r := range s {
+		if i%2 == parity {
+			runes = append(runes, r)
+		}
+	}
+	return string(runes)
+}
+
+func union(a map[point]bool, b map[point]bool) map[point]bool {
+	result := make(map[point]bool, 0)
+	for p, _ := range a {
+		result[p] = true
+	}
+	for p, _ := range b {
+		result[p] = true
+	}
+	return result
+}
+
 func day03() {
 	fmt.Println("Day 3")
-	text, err := ioutil.ReadFile("day03-input.txt")
+	bytes, err := ioutil.ReadFile("day03-input.txt")
 	if err != nil {
 		fmt.Printf("Error reading input: %s\n", err.Error())
 		os.Exit(1)
 	}
+	text := string(bytes)
 
-	houses, err := housesForMoves(string(text))
+	houses, err := housesForMoves(text)
 	if err != nil {
 		fmt.Println("Error moving: ", err)
 		os.Exit(1)
@@ -174,6 +196,20 @@ func day03() {
 
 	houseCount := len(houses)
 	fmt.Println("Number of houses: ", houseCount)
+
+	houses0, err := housesForMoves(everyOtherRune(text, 0))
+	if err != nil {
+		fmt.Println("Error moving: ", err)
+		os.Exit(1)
+	}
+	houses1, err := housesForMoves(everyOtherRune(text, 1))
+	if err != nil {
+		fmt.Println("Error moving: ", err)
+		os.Exit(1)
+	}
+
+	houseCount2 := len(union(houses0, houses1))
+	fmt.Println("Number of houses: ", houseCount2)
 }
 
 func main() {
